@@ -62,6 +62,9 @@ y_moy = np.mean(y)
 b1 = np.sum((x - x_moy) * (y - y_moy)) / np.sum((x - x_moy)**2)
 b0 = y_moy - b1 * x_moy
 
+print("bo =", b0)
+print("b1 =", b1)
+
 # Modèle de prédictions
 y_pred = b0 + b1 * x
 
