@@ -73,6 +73,7 @@ SCE = np.sum((y - y_pred) ** 2)
 SCT = np.sum((y - y_moy) ** 2)
 SCR = np.sum((y_pred - y_moy) ** 2)
 R2 = 1 - SCE / SCT
+print("R² (Coefficient de détermination) :", R2)
 
 
 # 2.2 Visualisation de la Droite de Régression
