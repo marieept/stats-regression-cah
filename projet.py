@@ -5,9 +5,9 @@ points =[(1,1),(1,2),(1,5),(3,4),(4,3),(6,2),(0,4)]
 noms= ["M1", "M2", "M3", "M4", "M5", "M6", "M7"]
 
 
-#==================================
-#Partie 1
-#==================================
+#########################################
+#               Partie 1                #
+#########################################
 
 #Séparer les coordonnées x et y
 x = np.array([p[0] for p in points])
@@ -90,9 +90,9 @@ plt.savefig("figure_2_1.jpg")
 print("Graphique enregistré dans le fichier figure_2_1.jpg")
 
 
-#==================================
-#Partie 3
-#==================================
+#########################################
+#               Partie 3                #
+#########################################
 
 #1. Résidus et somme des carrés des erreurs (SCE)
 e = y - y_pred
@@ -118,3 +118,8 @@ s = np.sqrt(MSE)
 print("Écart-type des erreurs :", s)
 
 #4. Interprétation des Résultats
+
+
+#########################################
+#               Partie 4                #
+#########################################
