@@ -4,6 +4,11 @@ import matplotlib.pyplot as plt
 points =[(1,1),(1,2),(1,5),(3,4),(4,3),(6,2),(0,4)]
 noms= ["M1", "M2", "M3", "M4", "M5", "M6", "M7"]
 
+
+#==================================
+#Partie 1
+#==================================
+
 #Séparer les coordonnées x et y
 x = np.array([p[0] for p in points])
 y = np.array([p[1] for p in points])
@@ -42,5 +47,33 @@ plt.show()
 #Le nuage montre une certaine tendance croissante mais non strictement linéaire.
 #Il est possible qu’une relation linéaire approximative existe entre xx et yy, à tester dans la partie suivante.
 
+#==================================
+#Partie 3
+#==================================
 
+#1. Résidus et somme des carrés des erreurs (SCE)
+y_pred = b0 + b1*x
 
+e = y - y_pred
+
+SCE=0
+
+for i in range(len(points)):
+    SCE += e[i]**2 
+print("SCE (Somme des carrés des erreurs) :", SCE)
+
+#2. Etimation de la variance des erreurs : MSE
+n= len(x)
+
+MSE = SCE / n-2
+
+print("MSE (Erreur quadratique moyenne) :", MSE)
+
+#Le n-2 vient du fait qu'on a estimé 2 paramètres (b₀ et b₁). On parle alors de degrés de liberté.
+
+#3. Ecart-type des erreurs
+s = np.sqrt(MSE)
+
+print("Écart-type des erreurs :", s)
+
+#4. Interprétation des Résultats
