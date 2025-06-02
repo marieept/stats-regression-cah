@@ -106,7 +106,7 @@ print("SCE (Somme des carrés des erreurs) :", SCE)
 #2. Etimation de la variance des erreurs : MSE
 n= len(x)
 
-MSE = SCE / n-2
+MSE = SCE / (n-2)
 
 print("MSE (Erreur quadratique moyenne) :", MSE)
 
