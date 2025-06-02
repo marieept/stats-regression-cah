@@ -124,3 +124,7 @@ print("Écart-type des erreurs :", s)
 #########################################
 #               Partie 4                #
 #########################################
+
+# 4.1 Estimation de la variance des erreurs
+
+# 4.2 Erreurs Standards des Coefficients
