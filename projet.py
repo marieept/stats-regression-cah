@@ -364,9 +364,6 @@ for i in range(len(points)):
 plt.title("Nuage de points")
 plt.xlabel("x")
 plt.ylabel("y")
-plt.grid()
-plt.show()
-
 
 pair_min, d_min = dist_min(points, dist)
 
