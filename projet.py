@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
-from scipy.cluster.hierarchy import linkage, dendrogram
+from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
 import math
 import pandas as pd
 
@@ -660,9 +660,33 @@ linked = linkage(points, method='single', metric='euclidean') # La variable link
 # Les labels permettent de visualiser quels points (M1 à M7) sont fusionnés à chaque étape.
 # Cela remplace et résume graphiquement toutes les étapes manuelles de la classification (Γ1, Γ2, etc.).
 plt.figure(figsize=(10, 6))
-dendrogram(linked, labels=["M1", "M2", "M3", "M4", "M5", "M6", "M7"])
+dendrogram(linked, labels=noms)
 plt.title('Dendrogramme - CAH (single linkage)')
 plt.xlabel('Points')
 plt.ylabel('Distance euclidienne')
 plt.grid(True)
 plt.show()
+
+# 7.
+# On repart du dendogramme que l'on a construit dans la question 6 
+plt.figure(figsize=(10, 6))
+dendrogram(linked, labels=noms)
+plt.title('Dendrogramme - CAH (single linkage)')
+plt.xlabel('Points')
+plt.ylabel('Distance euclidienne')
+seuil = 2 # seuile de découpe, on ne peut pas mettre au-dessus de la hauteur finale du dendogramme
+# le seuil de découpe permet de former des groupes, il faut couper juste avant la hauteur finale du dendogramme
+plt.axhline(y=seuil, color='red', linestyle='--', label=f'Seuil = {seuil}') # ajoute une ligne horizontale
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Créer les groupes à partir du seuil
+groupes = fcluster(linked, t=seuil, criterion='distance') # Former des groupes 
+# Affichage des groupes formés, ce sont les classes obtenues
+print("Groupes obtenus (avec seuil de distance =", seuil, ") :")
+for i, nom in enumerate(noms):
+    print(f"{nom} → Groupe {groupes[i]}")
+
+# 8.
+
