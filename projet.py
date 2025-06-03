@@ -388,263 +388,95 @@ plt.ylim(0, 6)
 
 
 #4.
-# Points de Gamma1 (groupe initial)
-# dist_min retourne un couple de points (p1, p2)
-p1, p2 = pair_min
 
-# retrouver les indices de ces points dans la liste points
-i = points.index(p1)
-j = points.index(p2)
+classe_G1= list(pair_min)
+print("Points dans Γ2 :", classe_G1)
 
-Gamma1 = [points[i], points[j]]
-Gamma1_nom = "G1"
+points_restants=[p for p in points if p not in classe_G1]
 
-# Points restants
-reste_points = []
-reste_noms = []
-for k in range(n):
-    if k != i and k != j:
-        reste_points.append(points[k])
-        reste_noms.append(noms[k])
+n_total = len(points_restants)
 
-# Fonction : distance entre un point et un segment [A,B]
-'''calcule la distance au carré entre un point P(px, py) et
-un segment défini par les points A(ax, ay) et B(bx, by)'''
-def distance_point_segment(px, py, ax, ay, bx, by):
-    #Composantes du vecteur AB
-    ABx = bx - ax
-    ABy = by - ay
+matrice_2 = np.zeros((n_total+1, n_total+1))
 
-    #Composantes du vecteur AP
-    APx = px - ax
-    APy = py - ay
+def dist_groupe_point(groupe, point):
+    return min(dist(g, point) for g in groupe)
 
-    #Carré de la longueur du segment AB
-    ab2 = ABx**2 + ABy**2
-    if ab2 == 0: #si A et B sont confondus, alors c'est une distance avec un point
-        return (px - ax)**2 + (py - ay)**2
+matrice_2[0][0]=0
+
+#Distances entre Γ1 et les points restants
+for i, p in enumerate(points_restants):
+    d= dist_groupe_point(classe_G1, p)
+    matrice_2[0, i+1]=d
+    matrice_2[i+1, 0]=d
     
-    #Projection orthogonale
-    t = (APx * ABx + APy * ABy) / ab2
-    if t < 0: #la projection est avant A donc A est le plus proche
-        closest_x, closest_y = ax, ay
-    elif t > 1: #la projection est après B donc B est le plus proche
-        closest_x, closest_y = bx, by
-    else:
-        closest_x = ax + t * ABx
-        closest_y = ay + t * ABy
-
-    #On retourne la distance au carré entre P et le point le plus proche du segment AB
-    dx = px - closest_x
-    dy = py - closest_y
-
-    return dx**2 +dy**2
-
-# Matrice 6x6 : Gamma1 + 5 autres points
-noms_total = [Gamma1_nom] + reste_noms
-taille = len(noms_total)
-matrice_2 = np.zeros((taille, taille))
-
-for a in range(taille):
-    for b in range(taille):
-        if a == b: #la matrice est nulle sur la diagonale
-            matrice_2[a][b] = 0
-        elif a == 0: #distance entre le point et Gamma 1 (distance segment-point)
-            px, py = reste_points[b - 1]
-            ax, ay = Gamma1[0]
-            bx, by = Gamma1[1]
-            matrice_2[a][b] = distance_point_segment(px, py, ax, ay, bx, by)
-        elif b == 0: #distance entre Gamma 1 et le point (distance segment-point)
-            px, py = reste_points[a - 1]
-            ax, ay = Gamma1[0]
-            bx, by = Gamma1[1]
-            matrice_2[a][b] = distance_point_segment(px, py, ax, ay, bx, by)
-        else: #distance entre deux points
-            matrice_2[a][b] = dist(reste_points[a - 1],reste_points[b - 1])
-
-# Affichage final
-print("Matrice avec Gamma1 et les autres points (distances au carré) \n")
-df = pd.DataFrame(matrice_2, index=noms_total, columns=noms_total)
-print(df.round(1))
-
-#Trouver Gamma2
-
-'''trouver la distance minimale dans une matrice, ainsi que les points correspondants
-sauf sur la diagonale'''
-def trouver_distance_minimale(matrice, noms):
-    min_dist = float('inf')
-    indices = (-1, -1)
-    
-    for i in range(len(matrice)):
-        for j in range(len(matrice)):
-            if i != j and matrice[i][j] < min_dist:
-                min_dist = matrice[i][j]
-                indices = (i, j)
-    
-    nom_i = noms[indices[0]]
-    nom_j = noms[indices[1]]
-    return nom_i, nom_j, min_dist
-
-
-p1_min, p2_min, d_min = trouver_distance_minimale(matrice_2, noms_total)
-
-# retrouver les indices de ces points dans la liste points
-i = noms_total.index(p1_min)
-j = noms_total.index(p2_min)
-
-# p1_min et p2_min sont des noms
-Gamma2_noms = [p1_min, p2_min]
-Gamma2 = []           # les points de Gamma2
-reste_points2 = []    # les autres points
-reste_noms2 = []      # leurs noms
-
-# On boucle sur noms et points restants (sauf G1 déjà groupé)
-for i in range(1, len(noms_total)):  # on saute "G1", qui est déjà dans Gamma1
-    nom = noms_total[i]
-    pt = reste_points[i - 1]  # car reste_points n'inclut pas "G1"
-    
-    if nom in Gamma2_noms:
-        Gamma2.append(pt)
-    else:
-        reste_points2.append(pt)
-        reste_noms2.append(nom)
-
-# Construction de la matrice 3 (G1, G2, autres points restants)
-groupes = [Gamma1, Gamma2]  # listes de 2 points chacun
-noms_total2 = ["G1", "G2"] + reste_noms2
-tous_points = groupes + [[p] for p in reste_points2]  # chaque point devient un "groupe d’un point"
-taille = len(tous_points)
-
-matrice_3 = np.zeros((taille, taille))
-
-for i in range(taille):
-    for j in range(taille):
-        if i == j: #sur la diagonale
-            matrice_3[i][j] = 0
+#Distances entre les points restants
+for i in range(n_total):
+    for j in range(n_total):
+        if i == j:
+            matrice_2[i+1, j+1] = 0
         else:
-            # Si un des deux est un groupe (contient 2 points), on fait la distance segment-point
-            if len(tous_points[i]) == 2 and len(tous_points[j]) == 1:
-                px, py = tous_points[j][0]
+            matrice_2[i+1][j+1]= dist(points_restants[i], points_restants[j])
 
-                #i est le segment
-                ax, ay = tous_points[i][0]
-                bx, by = tous_points[i][1]
+noms_groupes = ["Γ1"] + [f"{noms[points.index(p)]}" for p in points_restants]
 
-                matrice_3[i][j] = distance_point_segment(px, py, ax, ay, bx, by)
-            elif len(tous_points[i]) == 1 and len(tous_points[j]) == 2:
-                px, py = tous_points[i][0]
+df2 = pd.DataFrame(matrice_2, index=noms_groupes, columns=noms_groupes)
+print("Matrice des distances euclidiennes au carré :\n")
+print(df2.round(1))
 
-                #j est le segment
-                ax, ay = tous_points[j][0]
-                bx, by = tous_points[j][1]
 
-                matrice_3[i][j] = distance_point_segment(px, py, ax, ay, bx, by)
-            else:
-                # distance entre deux points
-                x1, y1 = tous_points[i][0]
-                x2, y2 = tous_points[j][0]
-                matrice_3[i][j] = (x1 - x2)**2 + (y1 - y2)**2
+#GAMMA 2
 
-            matrice_2[a][b] = (x1 - x2)**2 + (y1 - y2)**2
+# Trouver la paire avec la distance minimale (hors diagonale 0)
+min_dist = float('inf') #on initialise à l'infini
+fusion_indices = (None, None)
 
-# Affichage final
-print("Matrice avec Gamma2 et les autres points (distances au carré) \n")
-df = pd.DataFrame(matrice_3, index=noms_total2, columns=noms_total2)
-print(df.round(1))
+n = matrice_2.shape[0]
 
-#Tracé
+#Double boucle pour trouver la distance minimale au dessus de la diagonale
+for i in range(n):
+    for j in range(i+1, n):
+        if matrice_2[i, j] < min_dist:
+            min_dist = matrice_2[i][j]
+            fusion_indices = (i, j)
 
-'''récupère les coordonnées des points sachant qu'on connait leurs noms'''
-def coord_from_nom(nom, groupes_dict):
-    if nom in groupes_dict:
-        return groupes_dict[nom][0]
-    else:
-        return points[noms.index(nom)]
+# On construit la liste des points formant Γ2 (fusion entre Γ1 et un point ou entre 2 points isolés)
+if 0 in fusion_indices:
+    autre_idx = fusion_indices[1] if fusion_indices[0] == 0 else fusion_indices[0]
+    classe_G2 = classe_G1 + [points_restants[autre_idx - 1]]
+else:
+    classe_G2 = [points_restants[fusion_indices[0] - 1], points_restants[fusion_indices[1] - 1]]
 
-groupes_dict = {"G1": Gamma1, "G2": Gamma2}
+print("Points dans Γ2 :", classe_G2)
 
-x1, y1 = coord_from_nom(p1_min, groupes_dict)
-x2, y2 = coord_from_nom(p2_min, groupes_dict)
 
-x_vals2 = [x1, x2]
-y_vals2 = [y1, y2]
+# On récupère les indices des deux groupes à fusionner
+i1, i2 = fusion_indices
+
+# Si l'un est Γ1 (indice 0), on récupère le point isolé fusionné
+if i1 == 0:
+    p1 = classe_G1[0]
+    p2 = points_restants[i2 - 1] #-1 car points_restants ne contient pas G1
+elif i2 == 0:
+    p1 = classe_G1[0]
+    p2 = points_restants[i1 - 1]
+else:
+    # Fusion entre deux points isolés
+    p1 = points_restants[i1 - 1]
+    p2 = points_restants[i2 - 1]
+
+# Tracer la ligne entre les deux points formant Γ2
+x_vals2= [p1[0], p2[0]]
+y_vals2=[p1[1], p2[1]]
 
 plt.plot(x_vals2, y_vals2, 'ro--', label="Classe Γ2")
 plt.scatter(x_vals2, y_vals2, color='red')
 
-
-#5.
-
-# Trouver Gamma3 (deux éléments les plus proches)
-p3_min, p4_min, d_min3 = trouver_distance_minimale(matrice_3, noms_total2)
-
-Gamma3_noms = [p3_min, p4_min]
-Gamma3 = []
-
-reste_points3 = []
-reste_noms3 = []
-
-for i in range(len(noms_total2)):
-    nom = noms_total2[i]
-    pt = tous_points[i]  # soit un groupe, soit un point (encapsulé dans une liste)
-
-    if nom in Gamma3_noms:
-        Gamma3 += pt  # ajoute les points au nouveau groupe
-    else:
-        reste_points3.append(pt)
-        reste_noms3.append(nom)
-
-noms_total3 = ["G3"] + reste_noms3
-tous_points3 = [Gamma3] + reste_points3
-
-taille4 = len(tous_points3)
-matrice_4 = np.zeros((taille4, taille4))
-
-for i in range(taille4):
-    for j in range(taille4):
-        if i == j:
-            matrice_4[i][j] = 0
-        else:
-             # Si un des deux est un groupe (contient 2 points), on fait la distance segment-point
-            if len(tous_points3[i]) == 2 and len(tous_points3[j]) == 1:
-                px, py = tous_points3[j][0]
-
-                #i est le segment
-                ax, ay = tous_points3[i][0]
-                bx, by = tous_points3[i][1]
-
-                matrice_4[i][j] = distance_point_segment(px, py, ax, ay, bx, by)
-
-            elif len(tous_points3[i]) == 1 and len(tous_points3[j]) == 2:
-                px, py = tous_points3[i][0]
-
-                #j est le segment
-                ax, ay = tous_points3[j][0]
-                bx, by = tous_points3[j][1]
-                matrice_4[i][j] = distance_point_segment(px, py, ax, ay, bx, by)
-            else:
-                #distance entre deux points
-                x1, y1 = tous_points3[i][0]
-                x2, y2 = tous_points3[j][0]
-
-                matrice_4[i][j] = (x1 - x2)**2 + (y1 - y2)**2
-
-
-df = pd.DataFrame(matrice_4, index=noms_total3, columns=noms_total3)
-print("Matrice avec Gamma3 et les autres points :\n")
-print(df.round(1))
-
-groupes_dict = {"G1": Gamma1, "G2": Gamma2, "G3": Gamma3}
-
-x1, y1 = coord_from_nom(p3_min, groupes_dict)
-x2, y2 = coord_from_nom(p4_min, groupes_dict)
-
-x_vals3 = [x1, x2]
-y_vals3 = [y1, y2]
-
-plt.plot(x_vals3, y_vals3, 'o--', color='orange', label="Classe Γ3")
-plt.scatter(x_vals3, y_vals3, color='orange')
+plt.legend()
 plt.show()
+
+#GAMMA 3
+
+
 
 # 6.
 
