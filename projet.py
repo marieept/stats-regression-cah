@@ -385,8 +385,8 @@ x_vals = [pair_min[0][0], pair_min[0][1]]
 y_vals = [pair_min[1][0], pair_min[1][1]]
 
 # Relier/Encadrer les 2 points les plus proches (Classe Γ₁)
-plt.plot(x_vals, y_vals, 'ro--', label="Classe Γ₁")
-plt.scatter(x_vals, y_vals, color='red')
+plt.plot(x_vals, y_vals, 'go--', label="Classe Γ₁")
+plt.scatter(x_vals, y_vals, color='green')
 plt.title("Regroupement en classes")
 plt.grid(True)
 plt.xlim(-1, 7)
@@ -396,7 +396,20 @@ plt.ylim(0, 6)
 # print("Graphique enregistré dans le fichier figure_5_3.jpg")
 
 
-#4.
+#5.4
+
+#____________________________________________________________________________
+#Fonctions nécessaires aux distances
+
+def dist_groupe_point(groupe, point):
+    return min(dist(g, point) for g in groupe)
+
+def dist_groupe_groupe(groupe1, groupe2):
+    # distance minimale entre un point de groupe1 et un point de groupe2
+    return min(dist(p1, p2) for p1 in groupe1 for p2 in groupe2)
+#____________________________________________________________________________
+
+#matrice avec GAMMA 1
 
 classe_G1= list(pair_min)
 print("Points dans Γ2 :", classe_G1)
@@ -406,9 +419,6 @@ points_restants=[p for p in points if p not in classe_G1]
 n_total = len(points_restants)
 
 matrice_2 = np.zeros((n_total+1, n_total+1))
-
-def dist_groupe_point(groupe, point):
-    return min(dist(g, point) for g in groupe)
 
 matrice_2[0][0]=0
 
@@ -429,7 +439,7 @@ for i in range(n_total):
 noms_groupes = ["Γ1"] + [f"{noms[points.index(p)]}" for p in points_restants]
 
 df2 = pd.DataFrame(matrice_2, index=noms_groupes, columns=noms_groupes)
-print("Matrice des distances euclidiennes au carré :\n")
+print("Matrice des distances euclidiennes au carré avec Γ1 :\n")
 print(df2.round(1))
 
 
@@ -483,8 +493,50 @@ plt.scatter(x_vals2, y_vals2, color='red')
 plt.legend()
 plt.show()
 
-#GAMMA 3
+# matrice avec GAMMA 2
 
+points_restants2 = [p for p in points if p not in classe_G1 and p not in classe_G2]
+
+n_total2 = len(points_restants2)
+
+# Matrice 3x3 : Γ1, Γ2, et points restants
+# Taille = nombre de groupes (2) + nombre de points restants
+matrice_3 = np.zeros((n_total2 + 2, n_total2 + 2))
+
+matrice_3[0][0] = 0  # distance Γ1 - Γ1
+matrice_3[1][1] = 0  # distance Γ2 - Γ2
+
+# Distance entre Γ1 et Γ2 (il manquait cette ligne)
+matrice_3[0][1] = dist_groupe_groupe(classe_G1, classe_G2)  # prendre min distance entre groupes
+matrice_3[1][0] = matrice_3[0][1]  # symétrique
+
+# Distances entre Γ1 et les points restants
+for i, p in enumerate(points_restants2):
+    d = dist_groupe_point(classe_G1, p)
+    matrice_3[0, i + 2] = d
+    matrice_3[i + 2, 0] = d
+
+# Distances entre Γ2 et les points restants
+for i, p in enumerate(points_restants2):
+    d = dist_groupe_point(classe_G2, p)
+    matrice_3[1, i + 2] = d
+    matrice_3[i + 2, 1] = d
+
+# Distances entre les points restants
+for i in range(n_total2):
+    for j in range(n_total2):
+        if i == j:
+            matrice_3[i + 2, j + 2] = 0
+        else:
+            matrice_3[i + 2, j + 2] = dist(points_restants2[i], points_restants2[j])
+
+noms_groupes2 = ["Γ1", "Γ2"] + [f"{noms[points.index(p)]}" for p in points_restants2]
+
+df3 = pd.DataFrame(matrice_3, index=noms_groupes2, columns=noms_groupes2)
+print("Matrice des distances euclidiennes au carré avec Γ1 et Γ2 :\n")
+print(df3.round(1))
+
+#GAMMA 3
 
 
 # 6.
