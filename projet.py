@@ -11,6 +11,8 @@ noms= ["M1", "M2", "M3", "M4", "M5", "M6", "M7"]
 #               Partie 1                #
 #########################################
 
+print("\nPARTIE 1\n")
+
 #Séparer les coordonnées x et y
 x = np.array([p[0] for p in points])
 y = np.array([p[1] for p in points])
@@ -53,6 +55,8 @@ plt.show()
 #########################################
 #               Partie 2                #
 #########################################
+
+print("\nPARTIE 2\n")
 
 # 2.1 Calcul des Coefficients de Régression
 
@@ -99,6 +103,8 @@ print("Graphique enregistré dans le fichier figure_2_1.jpg")
 #########################################
 #               Partie 3                #
 #########################################
+
+print("\nPARTIE 3\n")
 
 #1. Résidus et somme des carrés des erreurs (SCE)
 e = y - y_pred
@@ -154,6 +160,8 @@ print("Écart-type des erreurs :", s)
 #               Partie 4                #
 #########################################
 
+print("\nPARTIE 4\n")
+
 # 4.1 Estimation de la variance des erreurs
 
 # 4.2 Erreurs Standards des Coefficients
@@ -164,11 +172,12 @@ for i in range(len(points)):
     somme_x += (x[i]-x_moy)**2
 
 SEb1 = s/np.sqrt(somme_x)
-print("Erreur standard de la pente:", SEb1)
+print("Erreur standard de la pente (SEb1):", SEb1)
 
 # Erreur standard de l'ordonnée à l'origine
 SEb0 = s*np.sqrt(1/n+x_moy**2/somme_x)
-print("Erreur standard de l'ordonnée à l'origine", SEb0)
+print("Erreur standard de l'ordonnée à l'origine (SEb0)", SEb0)
+print("\n")
 
 # 4.3 Test d'Hypothèse pour la Pente (b1)
 
@@ -180,13 +189,15 @@ print("Erreur standard de l'ordonnée à l'origine", SEb0)
 
 t_b1 = (b1-0)/SEb1 # t suit une loi de Student donc on calcul la p-valeur pour savoir si on rejette l'hypothèse ou non
 p_b1 = 2 * (1 - stats.t.cdf(abs(t_b1), df=n - 2))
+print("b1 :")
 print("valeur de test", t_b1)
 print("p-valeur:", p_b1)
 if(p_b1<0.05):
     print("p-valeur<0,05 donc on rejette l'hypothèse, b1 est significatif")
 else:
     print("p-valeur>0,05 donc on ne rejette pas l'hypothèse, il n'y a pas de preuve de relation linéaire")
-    
+print("b1 = ", b1)
+print("\n")
 
 # 4.4 Test d'Hypothèse pour l'Ordonnée à l'Origine (b0)
 # Hypothèses : H0 : b0 = 0 vs H1 : b0 != 0
@@ -195,18 +206,21 @@ else:
 
 t_b0 = (b0-0)/SEb0
 p_b0 = 2 * (1 - stats.t.cdf(abs(t_b0), df=n - 2))
+print("b0 :")
 print("valeur de test", t_b0)
 print("p-valeur:", p_b0)
 if(p_b0<0.05):
-    print("p-valeur<0,05 donc on rejette l'hypothèse, b0 est significatif")
+    print("p-valeur<0,05 donc on rejette l'hypothèse, b0 est significatif, la constante n'est pas nulle")
 else:
-    print("p-valeur>0,05 donc on ne rejette pas l'hypothèse, il n'y a pas de preuve de relation linéaire")
+    print("p-valeur>0,05 donc on ne rejette pas l'hypothèse, il n'y a pas de preuve de relation linéaire, b0 n'est pas significatif")
+print("b0 = ", b0)
+print("\n")
 
 # 4.5 Intervalles de Confiance pour les Coefficients
 
 alpha = 0.05
 
-t_crit = stats.t.cdf(1-alpha/2, df= n-2)
+t_crit = stats.t.ppf(1-alpha/2, df= n-2)
 
 IC_b1=[float(b1-t_crit*SEb1),float(b1+t_crit*SEb1)]
 IC_b0=[float(b0-t_crit*SEb0),float(b0+t_crit*SEb0)]
@@ -216,10 +230,49 @@ print("Intervalle de confiance à 95% pour b0:", IC_b0)
 
 # 4.6 Interprétation des Tests Statistiques
 
+# Pour l'erreur standard des coefficients on a :
+#   Erreur standard de la pente SEb1 = 0.2885
+#   Erreur standard à l'ordonnée à l'origine SEb0 = 0.8724
+
+# Test d'hypothèse pour la pente (b1) :
+#   Hypothèses :
+#        H0 : b1 = 0 (pas de relation linéaire)
+#        H1 : b1 != 0 (relation linéaire significative)
+#   Statistique de test t : -0.5054
+#   p-valeur : 0.6347 (> 0.05)
+#   Conclusion :
+#       On ne rejette pas H0.
+#       Il n’y a pas de preuve statistique d’une relation linéaire significative entre les variables.
+#       Autrement dit, la pente n’est pas significative.
+
+# Test d'hypothèse pour l'ordonnée à l'origine (b0) :
+#   Hypothèses :
+#        H0 : b0 = 0 (la constante est nulle)
+#        H1 : b0 != 0 (la constante est significativement différente de 0)
+#   Statistique de test t : 3.8208
+#   p-valeur : 0.0124 (< 0.05)
+#   Conclusion :
+#       On rejette H0.
+#       La constante est significativement différente de 0.
+
+# Intervalle de confiance à 95% :
+#   Pour b1 (la pente):
+#       [-0.8875, 0.5958]
+#       Contient zéro donc cohérent avec le fait que b1 n’est pas significatif.
+#   Pour b0 (l'ordonnée à l'origine) :
+#       [1.0907, 5.5760]
+#       Ne contient pas zéro donc confirme que b0 est significatif.
+
+# Interprétation finale : 
+#   La constante b0 est significative : le modèle prédit une valeur moyenne de y autour de 3.33 même quand x = 0.
+#   La pente b1 n’est pas significative : la variable explicative x n’explique pas de manière significative la variation de y dans notre échantillon.
+#   On pourrait envisager d'autres modèles, transformations de variables, ou d’augmenter la taille de l’échantillon si on soupçonne une relation qui n’apparaît pas ici.
 
 #########################################
 #               Partie 5                #
 #########################################
+
+print("\nPARTIE 5\n")
 
 # Classification Ascendante Hiérarchique (CAH)
 
@@ -248,6 +301,12 @@ def dist_inf(p1, p2):
 
 
 # 2.
+'''
+La fonction dist_min est une fonction permettant de retourner un couple de point situés à une distance minimale l'un de l'autre
+paramètre
+    tableau : un tableau de points
+    dist_func : la fonction du calcul de la distance entre deux points que l'on veut utiliser
+'''
 def dist_min(tableau, dist_func):
     min_d = float('inf')
     couple_points = None
@@ -291,9 +350,9 @@ print(data.round(1))
 
 '''
 # Encadrer M1 et M7 (Classe Γ₁)
-x_vals = [points["M1"][0], points["M7"][0]]
-y_vals = [points["M1"][1], points["M7"][1]]
-plt.plot(x_vals, y_vals, 'ro--')
+x_vals = [points[0][0], points[6][0]]
+y_vals = [points[0][1], points[6][1]]
+#plt.plot(x_vals, y_vals, 'ro--')
 plt.scatter(x_vals, y_vals, color='red')
 plt.title("Regroupement initial : Classe Γ₁ = {M1, M7}")
 plt.grid(True)
