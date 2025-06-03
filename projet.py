@@ -759,3 +759,5 @@ print(f"\nMeilleur nombre de groupes : {best_k} avec un coefficient de silhouett
 #     < 0 : Mauvais clusteri
 
 
+
+
