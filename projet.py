@@ -109,7 +109,7 @@ print("Graphique enregistré dans le fichier figure_2_1.jpg")
 
 print("\nPARTIE 3\n")
 
-#1. Résidus et somme des carrés des erreurs (SCE)
+# 3.1. Résidus et somme des carrés des erreurs (SCE)
 e = y - y_pred
 
 SCE=0
@@ -118,7 +118,7 @@ for i in range(len(points)):
     SCE += e[i]**2 
 print("SCE (Somme des carrés des erreurs) :", SCE)
 
-#2. Etimation de la variance des erreurs : MSE
+# 3.2. Etimation de la variance des erreurs : MSE
 n= len(x)
 
 MSE = SCE / (n-2)
@@ -127,26 +127,26 @@ print("MSE (Erreur quadratique moyenne) :", MSE)
 
 #Le n-2 vient du fait qu'on a estimé 2 paramètres (b0 et b1). On parle alors de degrés de liberté.
 
-#3. Ecart-type des erreurs
+# 3.3. Ecart-type des erreurs
 s = np.sqrt(MSE)
 
 print("Écart-type des erreurs :", s)
 
-#4. Interprétation des Résultats
+# 3.4. Interprétation des Résultats
 
-# 🔹 Interprétation des coefficients
+#     - Interprétation des coefficients
 
 #     b0=3.33 (ordonnée à l'origine) : c'est la valeur estimée de y quand x=0. Cela signifie qu'à l'origine de l'axe x, la droite de régression prévoit y=3.33.
 
 #     b1=−0.15 (pente) : chaque augmentation de 1 unité en x entraîne une baisse moyenne de y de 0.15. La relation est donc légèrement décroissante, mais très faible.
 
-# 🔹 Coefficient de détermination R2
+#     - Coefficient de détermination R2
 
 #     Le R2=0.049 (soit 4.9%) indique que seulement 4.9% de la variation de y est expliquée par la variable x.
 
 #     Cela signifie que la droite de régression explique très peu la variabilité des points. La majorité de la variation de y provient donc d'autres facteurs non capturés par ce modèle.
 
-# 🔹 Analyse des erreurs
+#     - Analyse des erreurs
 
 #     SCE (Somme des carrés des erreurs) : 11.42
 #     → mesure l’erreur globale du modèle (plus elle est faible, meilleur est l’ajustement).
@@ -279,7 +279,7 @@ print("\nPARTIE 5\n")
 
 # Classification Ascendante Hiérarchique (CAH)
 
-# 1.a
+# 5.1.a.
 def dist(p1, p2):
     '''
     Cette fonction prend deux couples de points en paramètre et retourne une distance entre ces deux points
@@ -292,7 +292,7 @@ def dist(p1, p2):
     print("La distance euclidienne vaut : ", distance)
     return distance
 
-# 1.b
+# 5.1.b.
 def dist1(p1, p2):
     '''
     Cette fonction prend deux couples de points en paramètre et retourne une distance entre ces deux points
@@ -305,7 +305,7 @@ def dist1(p1, p2):
     print("La distance de Manhattan vaut : ", distance)
     return distance
 
-# 1.c
+# 5.1.c.
 def dist_inf(p1, p2):
     '''
     Cette fonction prend deux couples de points en paramètre et retourne une distance entre ces deux points
@@ -318,16 +318,28 @@ def dist_inf(p1, p2):
     print("La distance de Chebyshev vaut : ", distance)
     return distance
 
-# 1.d : Distance de Ward ???
+# 5.1.d. : Distance de Ward ???
+
+    '''
+        La distance de Ward ne mesure pas une simple distance géométrique entre deux points, 
+    mais l’augmentation de la variance intra-classe qu'engendrerait la fusion de deux groupes.
+    Elle favorise des regroupements compacts, homogènes, et tend à éviter que des points trop éloignés 
+    soient prématurément fusionnés. C’est pourquoi elle est souvent utilisée dans la Classification Ascendante Hiérarchique (CAH),
+    notamment pour éviter la formation de groupes déséquilibrés.
+    
+    Distance de Ward entre un groupe 1 et un groupe 2 :
+    
+        ((len(gp1)*len(gp2))/(len(gp1)+len(gp2)))*(np.abs(np.mean(gp1)-np.mean(gp2))**2)
+    '''
 
 
-# 2.
+# 5.2.
 def dist_min(tableau, dist_func):
     '''
     Cette fonction prend un tableau et une fonction en paramètre et retourne un couple de point situés à une distance minimale l'un de l'autre
     :param : tableau : un tableau de points
     :param : dist_func : la fonction du calcul de la distance entre deux points que l'on veut utiliser
-    :return : un couple de points
+    :return : un couple de points et la distance qui les sépare
     '''
     min_d = float('inf')
     couple_points = None
@@ -336,31 +348,31 @@ def dist_min(tableau, dist_func):
             d = dist_func(tableau[i], tableau[j])           #Récupère la distance à partir de la fonction donnée en entrée
             if d < min_d:                                   #Calcul de toutes les distances entre les points et garde la distance minimum
                 min_d = d
-                couple_points = (tableau[i], tableau[j])
-    return couple_points, min_d
+                couple_points = (tableau[i], tableau[j])    #Couple de points le plus proche
+    return couple_points, min_d                             
 
 
-# 3.
+# 5.3.
 
 # Initialisation de la matrice
-n = len(x)
-matrice_1 = np.zeros((n, n))
+n = len(x)                                                  #Définit la taille de la matrice carré
+matrice_1 = np.zeros((n, n))                                #Rempli la matrice carré de taille n x n par des 0
 
 # Remplissage de la matrice avec d²
-for i in range(n):
-    for j in range(n):
-        xi, yi = points[i]
-        xj, yj = points[j]
-        d_eucli = dist(points[i], points[j])
-        d_eucli_2 = d_eucli**2
-        matrice_1[i][j] = d_eucli_2
+for i in range(n):                                          #Permet le remplissage d'une ligne
+    for j in range(n):                                      #Permet de passer d'une ligne à la suivante
+        xi, yi = points[i]                                  #Coordonnées d'une premier point i
+        xj, yj = points[j]                                  #Coordonnées d'un deuxième point j
+        d_eucli = dist(points[i], points[j])                #Calcul de la distance euclidienne entre ces 2 points
+        d_eucli_2 = d_eucli**2                              #Calcul du carré de la distance euclidienne
+        matrice_1[i][j] = d_eucli_2                         #Rempli la matrice avec les valeurs obtenues
 
 # Affichage avec pandas pour lisibilité
-data = pd.DataFrame(matrice_1, index=y, columns=x)
+data = pd.DataFrame(matrice_1, index=y, columns=x)          #Affiche la matrice dans le terminal (avec les coordonnées x et y pour les colonnes et les lignes)
 print("Matrice des distances euclidiennes au carré :\n")
 print(data.round(1))
 
-# Tracé
+# Tracé du graphique de base 
 plt.scatter(x, y, color='blue')
 for i in range(len(points)):
     plt.text(x[i] + 0.1, y[i] + 0.1, noms[i])
@@ -368,18 +380,15 @@ plt.title("Nuage de points")
 plt.xlabel("x")
 plt.ylabel("y")
 
+# Récupération des coordonnées des 2 points de la paire la plus proche et calcul de la distance qui les sépare
 pair_min, d_min = dist_min(points, dist)
-
 print("La paire de points les plus proche est : ", pair_min)
-
 x_vals = [pair_min[0][0], pair_min[0][1]]
 y_vals = [pair_min[1][0], pair_min[1][1]]
 
-#x_vals, y_vals = dist_min(matrice_1, dist)
-
-# Encadrer les 2 points les plus proches (Classe Γ₁)
-plt.plot(x_vals, y_vals, 'go--', label="Classe Γ1")
-plt.scatter(x_vals, y_vals, color='green')
+# Relier/Encadrer les 2 points les plus proches (Classe Γ₁)
+plt.plot(x_vals, y_vals, 'ro--', label="Classe Γ₁")
+plt.scatter(x_vals, y_vals, color='red')
 plt.title("Regroupement en classes")
 plt.grid(True)
 plt.xlim(-1, 7)
@@ -389,266 +398,98 @@ plt.ylim(0, 6)
 # print("Graphique enregistré dans le fichier figure_5_3.jpg")
 
 
-#4.
-# Points de Gamma1 (groupe initial)
-# dist_min retourne un couple de points (p1, p2)
-p1, p2 = pair_min
+# 5.4.
 
-# retrouver les indices de ces points dans la liste points
-i = points.index(p1)
-j = points.index(p2)
+classe_G1= list(pair_min)
+print("Points dans Γ2 :", classe_G1)
 
-Gamma1 = [points[i], points[j]]
-Gamma1_nom = "G1"
+points_restants=[p for p in points if p not in classe_G1]
 
-# Points restants
-reste_points = []
-reste_noms = []
-for k in range(n):
-    if k != i and k != j:
-        reste_points.append(points[k])
-        reste_noms.append(noms[k])
+n_total = len(points_restants)
 
-# Fonction : distance entre un point et un segment [A,B]
-'''calcule la distance au carré entre un point P(px, py) et
-un segment défini par les points A(ax, ay) et B(bx, by)'''
-def distance_point_segment(px, py, ax, ay, bx, by):
-    #Composantes du vecteur AB
-    ABx = bx - ax
-    ABy = by - ay
+matrice_2 = np.zeros((n_total+1, n_total+1))
 
-    #Composantes du vecteur AP
-    APx = px - ax
-    APy = py - ay
+def dist_groupe_point(groupe, point):
+    return min(dist(g, point) for g in groupe)
 
-    #Carré de la longueur du segment AB
-    ab2 = ABx**2 + ABy**2
-    if ab2 == 0: #si A et B sont confondus, alors c'est une distance avec un point
-        return (px - ax)**2 + (py - ay)**2
+matrice_2[0][0]=0
+
+#Distances entre Γ1 et les points restants
+for i, p in enumerate(points_restants):
+    d= dist_groupe_point(classe_G1, p)
+    matrice_2[0, i+1]=d
+    matrice_2[i+1, 0]=d
     
-    #Projection orthogonale
-    t = (APx * ABx + APy * ABy) / ab2
-    if t < 0: #la projection est avant A donc A est le plus proche
-        closest_x, closest_y = ax, ay
-    elif t > 1: #la projection est après B donc B est le plus proche
-        closest_x, closest_y = bx, by
-    else:
-        closest_x = ax + t * ABx
-        closest_y = ay + t * ABy
-
-    #On retourne la distance au carré entre P et le point le plus proche du segment AB
-    dx = px - closest_x
-    dy = py - closest_y
-
-    return dx**2 +dy**2
-
-# Matrice 6x6 : Gamma1 + 5 autres points
-noms_total = [Gamma1_nom] + reste_noms
-taille = len(noms_total)
-matrice_2 = np.zeros((taille, taille))
-
-for a in range(taille):
-    for b in range(taille):
-        if a == b: #la matrice est nulle sur la diagonale
-            matrice_2[a][b] = 0
-        elif a == 0: #distance entre le point et Gamma 1 (distance segment-point)
-            px, py = reste_points[b - 1]
-            ax, ay = Gamma1[0]
-            bx, by = Gamma1[1]
-            matrice_2[a][b] = distance_point_segment(px, py, ax, ay, bx, by)
-        elif b == 0: #distance entre Gamma 1 et le point (distance segment-point)
-            px, py = reste_points[a - 1]
-            ax, ay = Gamma1[0]
-            bx, by = Gamma1[1]
-            matrice_2[a][b] = distance_point_segment(px, py, ax, ay, bx, by)
-        else: #distance entre deux points
-            matrice_2[a][b] = dist(reste_points[a - 1],reste_points[b - 1])
-
-# Affichage final
-print("Matrice avec Gamma1 et les autres points (distances au carré) \n")
-df = pd.DataFrame(matrice_2, index=noms_total, columns=noms_total)
-print(df.round(1))
-
-#Trouver Gamma2
-
-'''trouver la distance minimale dans une matrice, ainsi que les points correspondants
-sauf sur la diagonale'''
-def trouver_distance_minimale(matrice, noms):
-    min_dist = float('inf')
-    indices = (-1, -1)
-    
-    for i in range(len(matrice)):
-        for j in range(len(matrice)):
-            if i != j and matrice[i][j] < min_dist:
-                min_dist = matrice[i][j]
-                indices = (i, j)
-    
-    nom_i = noms[indices[0]]
-    nom_j = noms[indices[1]]
-    return nom_i, nom_j, min_dist
-
-
-p1_min, p2_min, d_min = trouver_distance_minimale(matrice_2, noms_total)
-
-# retrouver les indices de ces points dans la liste points
-i = noms_total.index(p1_min)
-j = noms_total.index(p2_min)
-
-# p1_min et p2_min sont des noms
-Gamma2_noms = [p1_min, p2_min]
-Gamma2 = []           # les points de Gamma2
-reste_points2 = []    # les autres points
-reste_noms2 = []      # leurs noms
-
-# On boucle sur noms et points restants (sauf G1 déjà groupé)
-for i in range(1, len(noms_total)):  # on saute "G1", qui est déjà dans Gamma1
-    nom = noms_total[i]
-    pt = reste_points[i - 1]  # car reste_points n'inclut pas "G1"
-    
-    if nom in Gamma2_noms:
-        Gamma2.append(pt)
-    else:
-        reste_points2.append(pt)
-        reste_noms2.append(nom)
-
-# Construction de la matrice 3 (G1, G2, autres points restants)
-groupes = [Gamma1, Gamma2]  # listes de 2 points chacun
-noms_total2 = ["G1", "G2"] + reste_noms2
-tous_points = groupes + [[p] for p in reste_points2]  # chaque point devient un "groupe d’un point"
-taille = len(tous_points)
-
-matrice_3 = np.zeros((taille, taille))
-
-for i in range(taille):
-    for j in range(taille):
-        if i == j: #sur la diagonale
-            matrice_3[i][j] = 0
+#Distances entre les points restants
+for i in range(n_total):
+    for j in range(n_total):
+        if i == j:
+            matrice_2[i+1, j+1] = 0
         else:
-            # Si un des deux est un groupe (contient 2 points), on fait la distance segment-point
-            if len(tous_points[i]) == 2 and len(tous_points[j]) == 1:
-                px, py = tous_points[j][0]
+            matrice_2[i+1][j+1]= dist(points_restants[i], points_restants[j])
 
-                #i est le segment
-                ax, ay = tous_points[i][0]
-                bx, by = tous_points[i][1]
+noms_groupes = ["Γ1"] + [f"{noms[points.index(p)]}" for p in points_restants]
 
-                matrice_3[i][j] = distance_point_segment(px, py, ax, ay, bx, by)
-            elif len(tous_points[i]) == 1 and len(tous_points[j]) == 2:
-                px, py = tous_points[i][0]
+df2 = pd.DataFrame(matrice_2, index=noms_groupes, columns=noms_groupes)
+print("Matrice des distances euclidiennes au carré :\n")
+print(df2.round(1))
 
-                #j est le segment
-                ax, ay = tous_points[j][0]
-                bx, by = tous_points[j][1]
 
-                matrice_3[i][j] = distance_point_segment(px, py, ax, ay, bx, by)
-            else:
-                # distance entre deux points
-                x1, y1 = tous_points[i][0]
-                x2, y2 = tous_points[j][0]
-                matrice_3[i][j] = (x1 - x2)**2 + (y1 - y2)**2
+#GAMMA 2
 
-            matrice_2[a][b] = (x1 - x2)**2 + (y1 - y2)**2
+# Trouver la paire avec la distance minimale (hors diagonale 0)
+min_dist = float('inf') #on initialise à l'infini
+fusion_indices = (None, None)
 
-# Affichage final
-print("Matrice avec Gamma2 et les autres points (distances au carré) \n")
-df = pd.DataFrame(matrice_3, index=noms_total2, columns=noms_total2)
-print(df.round(1))
+n = matrice_2.shape[0]
 
-#Tracé
+#Double boucle pour trouver la distance minimale au dessus de la diagonale
+for i in range(n):
+    for j in range(i+1, n):
+        if matrice_2[i, j] < min_dist:
+            min_dist = matrice_2[i][j]
+            fusion_indices = (i, j)
 
-'''récupère les coordonnées des points sachant qu'on connait leurs noms'''
-def coord_from_nom(nom, groupes_dict):
-    if nom in groupes_dict:
-        return groupes_dict[nom][0]
-    else:
-        return points[noms.index(nom)]
+# On construit la liste des points formant Γ2 (fusion entre Γ1 et un point ou entre 2 points isolés)
+if 0 in fusion_indices:
+    autre_idx = fusion_indices[1] if fusion_indices[0] == 0 else fusion_indices[0]
+    classe_G2 = classe_G1 + [points_restants[autre_idx - 1]]
+else:
+    classe_G2 = [points_restants[fusion_indices[0] - 1], points_restants[fusion_indices[1] - 1]]
 
-groupes_dict = {"G1": Gamma1, "G2": Gamma2}
+print("Points dans Γ2 :", classe_G2)
 
-x1, y1 = coord_from_nom(p1_min, groupes_dict)
-x2, y2 = coord_from_nom(p2_min, groupes_dict)
 
-x_vals2 = [x1, x2]
-y_vals2 = [y1, y2]
+# On récupère les indices des deux groupes à fusionner
+i1, i2 = fusion_indices
+
+# Si l'un est Γ1 (indice 0), on récupère le point isolé fusionné
+if i1 == 0:
+    p1 = classe_G1[0]
+    p2 = points_restants[i2 - 1] #-1 car points_restants ne contient pas G1
+elif i2 == 0:
+    p1 = classe_G1[0]
+    p2 = points_restants[i1 - 1]
+else:
+    # Fusion entre deux points isolés
+    p1 = points_restants[i1 - 1]
+    p2 = points_restants[i2 - 1]
+
+# Tracer la ligne entre les deux points formant Γ2
+x_vals2= [p1[0], p2[0]]
+y_vals2=[p1[1], p2[1]]
 
 plt.plot(x_vals2, y_vals2, 'ro--', label="Classe Γ2")
 plt.scatter(x_vals2, y_vals2, color='red')
 
-
-#5.
-
-# Trouver Gamma3 (deux éléments les plus proches)
-p3_min, p4_min, d_min3 = trouver_distance_minimale(matrice_3, noms_total2)
-
-Gamma3_noms = [p3_min, p4_min]
-Gamma3 = []
-
-reste_points3 = []
-reste_noms3 = []
-
-for i in range(len(noms_total2)):
-    nom = noms_total2[i]
-    pt = tous_points[i]  # soit un groupe, soit un point (encapsulé dans une liste)
-
-    if nom in Gamma3_noms:
-        Gamma3 += pt  # ajoute les points au nouveau groupe
-    else:
-        reste_points3.append(pt)
-        reste_noms3.append(nom)
-
-noms_total3 = ["G3"] + reste_noms3
-tous_points3 = [Gamma3] + reste_points3
-
-taille4 = len(tous_points3)
-matrice_4 = np.zeros((taille4, taille4))
-
-for i in range(taille4):
-    for j in range(taille4):
-        if i == j:
-            matrice_4[i][j] = 0
-        else:
-             # Si un des deux est un groupe (contient 2 points), on fait la distance segment-point
-            if len(tous_points3[i]) == 2 and len(tous_points3[j]) == 1:
-                px, py = tous_points3[j][0]
-
-                #i est le segment
-                ax, ay = tous_points3[i][0]
-                bx, by = tous_points3[i][1]
-
-                matrice_4[i][j] = distance_point_segment(px, py, ax, ay, bx, by)
-
-            elif len(tous_points3[i]) == 1 and len(tous_points3[j]) == 2:
-                px, py = tous_points3[i][0]
-
-                #j est le segment
-                ax, ay = tous_points3[j][0]
-                bx, by = tous_points3[j][1]
-                matrice_4[i][j] = distance_point_segment(px, py, ax, ay, bx, by)
-            else:
-                #distance entre deux points
-                x1, y1 = tous_points3[i][0]
-                x2, y2 = tous_points3[j][0]
-
-                matrice_4[i][j] = (x1 - x2)**2 + (y1 - y2)**2
-
-
-df = pd.DataFrame(matrice_4, index=noms_total3, columns=noms_total3)
-print("Matrice avec Gamma3 et les autres points :\n")
-print(df.round(1))
-
-groupes_dict = {"G1": Gamma1, "G2": Gamma2, "G3": Gamma3}
-
-x1, y1 = coord_from_nom(p3_min, groupes_dict)
-x2, y2 = coord_from_nom(p4_min, groupes_dict)
-
-x_vals3 = [x1, x2]
-y_vals3 = [y1, y2]
-
-plt.plot(x_vals3, y_vals3, 'o--', color='orange', label="Classe Γ3")
-plt.scatter(x_vals3, y_vals3, color='orange')
+plt.legend()
 plt.show()
 
-# 6.
+#GAMMA 3
+
+
+
+# 5.6.
 
 # Étape 1 : calcul de la matrice de linkage avec méthode "single"
 # La fonction linkage construit la hiérarchie de regroupement en utilisant la distance euclidienne.
@@ -669,7 +510,7 @@ plt.ylabel('Distance euclidienne')
 plt.grid(True)
 plt.show()
 
-# 7.
+# 5.7.
 # On repart du dendogramme que l'on a construit dans la question 6 
 plt.figure(figsize=(10, 6))
 dendrogram(linked, labels=noms)
@@ -690,7 +531,7 @@ print("Groupes obtenus (avec seuil de distance =", seuil, ") :")
 for i, nom in enumerate(noms):
     print(f"{nom} → Groupe {groupes[i]}")
 
-# 8.
+# 5.8.
 # on charge les données du fichier
 df = pd.read_excel("Data_PE_2025-CSI3_CIR3.xlsx")
 print(df.head())
@@ -732,32 +573,30 @@ best_score = -1 # On initialise le meilleur score à une valeur très basse
 best_k = None # Variable qui contiendra le meilleur nombre de groupes
 for k in range(2, 11): # On teste les valeurs de k de 2 à 10, on commence à 2 car à 1 les individus sont dans le même groupe, 10 car cela suffit pour ce jeu de données
     labels = fcluster(huit, t=k, criterion='maxclust') # On coupe l'arbre pour obtenir k groupes
-    score = silhouette_score(data_scaled, labels) # On calcule le score de silhouette pour évaluer la qualité du clustering
+    score = silhouette_score(data_scaled, labels) # On calcule le score de silhouette pour évaluer la qualité du regroupement
     print(f"{k} groupes : coefficient de silhouette = {score:.4f}") # Affichage du score
     if score > best_score: # Si ce score est le meilleur qu'on a vu jusque-là
         best_score = score # On le sauvegarde
         best_k = k # On note la valeur de k correspondante
 
-print(f"\nMeilleur nombre de groupes : {best_k} avec un coefficient de silhouette de {best_score:.4f}") # On affiche le meilleur nombre de clusters et le meilleur score obtenu
+print(f"\nMeilleur nombre de groupes : {best_k} avec un coefficient de silhouette de {best_score:.4f}") # On affiche le meilleur nombre de groupes et le meilleur score obtenu
 
-# Le Silhouette Score mesure dans quelle mesure un objet est bien attribué à son groupe (cluster), par rapport aux autres groupes.
+# Le Silhouette Score mesure dans quelle mesure un objet est bien attribué à son groupe, par rapport aux autres groupes.
 # Pour un point ii, on calcule :
-#    a(i)a(i) : la distance moyenne entre ii et tous les autres points du même cluster.
-#    b(i)b(i) : la plus petite distance moyenne entre ii et tous les points des autres clusters (c'est-à-dire le cluster voisin le plus proche).
+#    a(i)a(i) : la distance moyenne entre ii et tous les autres points du même groupe.
+#    b(i)b(i) : la plus petite distance moyenne entre ii et tous les points des autres groupes (c'est-à-dire le groupe voisin le plus proche).
 
 # Ensuite, on calcule le score silhouette de ii :
 #   s(i)=b(i)−a(i)max⁡(a(i),b(i))
 #   s(i)=max(a(i),b(i))b(i)−a(i)​
 # Interprétation :
-#    s(i)≈1s(i)≈1 : Le point est bien regroupé, très loin des autres clusters.
-#    s(i)≈0s(i)≈0 : Le point est à la frontière entre deux clusters.
-#    s(i)<0s(i)<0 : Le point est mal classé, plus proche d’un autre cluster que du sien.
+#    s(i)≈1s(i)≈1 : Le point est bien regroupé, très loin des autres groupes.
+#    s(i)≈0s(i)≈0 : Le point est à la frontière entre deux groupes.
+#    s(i)<0s(i)<0 : Le point est mal classé, plus proche d’un autre groupe que du sien.
 # Silhouette Score global :
-#   On calcule la moyenne des s(i)s(i) pour tous les points afin d’évaluer la qualité globale du clustering.
-#   Silhouette Score global ≈ 1 : Très bons clusters.
-#     ≈ 0 : Clusters qui se chevauchent.
-#     < 0 : Mauvais clusteri
-
-
+#   On calcule la moyenne des s(i)s(i) pour tous les points afin d’évaluer la qualité globale du regroupemennt.
+#   Silhouette Score global ≈ 1 : Très bons groupes.
+#     ≈ 0 : groupes qui se chevauchent.
+#     < 0 : Mauvais regroupement
 
 
