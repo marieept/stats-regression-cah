@@ -368,18 +368,14 @@ plt.ylabel("y")
 
 pair_min, d_min = dist_min(points, dist)
 
-print(pair_min)
+print("La paire de points les plus proche est : ", pair_min)
 
 x_vals = [pair_min[0][0], pair_min[0][1]]
 y_vals = [pair_min[1][0], pair_min[1][1]]
 
-#plt.plot(x_vals, y_vals, 'ro--')
-
 #x_vals, y_vals = dist_min(matrice_1, dist)
 
-# Encadrer M1 et M7 (Classe Γ₁)
-#x_vals = [points[0][0], points[6][0]]
-#y_vals = [points[0][1], points[6][1]]
+# Encadrer les 2 points les plus proches (Classe Γ₁)
 plt.plot(x_vals, y_vals, 'ro--', label="Classe Γ₁")
 plt.scatter(x_vals, y_vals, color='red')
 plt.title("Regroupement des 2 points les plus proches")
