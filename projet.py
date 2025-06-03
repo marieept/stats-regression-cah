@@ -40,6 +40,7 @@ plt.xlabel("x")
 plt.ylabel("y")
 plt.grid()
 plt.show()
+plt.savefig("figure_1_2.jpg")
 
 #   Interprétation statistique :
 
@@ -92,7 +93,7 @@ print("R² (Coefficient de détermination) :", R2)
 plt.scatter(x, y, label='Points')
 plt.plot(x, y_pred, color='red', label=f'Droite de régression: y = {b0:.2f} + {b1:.2f}x')
 plt.legend()
-plt.title(f'Droite de régression linéaire simple (R² = {R2:.2f})')
+plt.title(f'Droite de régression linéaire simple (R² = {R2:.4f})')
 plt.xlabel("x")
 plt.ylabel("y")
 plt.grid(True)
