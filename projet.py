@@ -699,6 +699,39 @@ print("Matrice des distances euclidiennes au carré avec Γ6 :\n")
 print(df6.round(1))
 print("\n")
 
+#Visualisation des classes
+# Liste de toutes les classes formées au fur et à mesure
+classes_etapes = [classe_G1, classe_G2, classe_G3, classe_G4, classe_G5, classe_G6]
+
+# Couleurs pour les classes
+couleurs = ['blue', 'orange', 'red', 'green', 'purple', 'brown']
+
+x_all = [p[0] for p in points]
+y_all = [p[1] for p in points]
+
+for i in range(len(classes_etapes)):
+    plt.figure(figsize=(8,6))
+    
+    # Tracer tous les points en gris clair
+    plt.scatter(x_all, y_all, color='lightgray', label='Points initiaux')
+    
+    # Tracer toutes les classes formées jusqu'à l'étape i
+    for j in range(i+1):
+        classe = classes_etapes[j]
+        x_c = [p[0] for p in classe]
+        y_c = [p[1] for p in classe]
+        
+        plt.scatter(x_c, y_c, color=couleurs[j], s=100, label=f"Classe Γ{j+1}")
+        if len(classe) > 1:
+            plt.plot(x_c, y_c, linestyle='--', color=couleurs[j])
+    
+    plt.title(f"Fusion jusqu'à la classe Γ{i+1}")
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
 
 # 5.6.
 
