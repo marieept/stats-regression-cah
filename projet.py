@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
+from scipy.cluster.hierarchy import linkage, dendrogram
 import math
 import pandas as pd
 
@@ -323,15 +324,15 @@ def dist_min(tableau, dist_func):
     '''
     Cette fonction prend un tableau et une fonction en paramètre et retourne un couple de point situés à une distance minimale l'un de l'autre
     :param : tableau : un tableau de points
-    :param :dist_func : la fonction du calcul de la distance entre deux points que l'on veut utiliser
-    :return :un couple de points
+    :param : dist_func : la fonction du calcul de la distance entre deux points que l'on veut utiliser
+    :return : un couple de points
     '''
     min_d = float('inf')
     couple_points = None
     for i in range(len(tableau)):
-        for j in range(i+1, len(tableau)):
-            d = dist_func(tableau[i], tableau[j])
-            if d < min_d:
+        for j in range(i+1, len(tableau)):                  #Permet de parcourir toutes les lignes et toutes les colonnes d'un tableau 
+            d = dist_func(tableau[i], tableau[j])           #Récupère la distance à partir de la fonction donnée en entrée
+            if d < min_d:                                   #Calcul de toutes les distances entre les points et garde la distance minimum
                 min_d = d
                 couple_points = (tableau[i], tableau[j])
     return couple_points, min_d
@@ -367,18 +368,14 @@ plt.ylabel("y")
 
 pair_min, d_min = dist_min(points, dist)
 
-print(pair_min)
+print("La paire de points les plus proche est : ", pair_min)
 
 x_vals = [pair_min[0][0], pair_min[0][1]]
 y_vals = [pair_min[1][0], pair_min[1][1]]
 
-#plt.plot(x_vals, y_vals, 'ro--')
-
 #x_vals, y_vals = dist_min(matrice_1, dist)
 
-# Encadrer M1 et M7 (Classe Γ₁)
-#x_vals = [points[0][0], points[6][0]]
-#y_vals = [points[0][1], points[6][1]]
+# Encadrer les 2 points les plus proches (Classe Γ₁)
 plt.plot(x_vals, y_vals, 'ro--', label="Classe Γ₁")
 plt.scatter(x_vals, y_vals, color='red')
 plt.title("Regroupement des 2 points les plus proches")
@@ -386,8 +383,8 @@ plt.grid(True)
 plt.xlim(-1, 7)
 plt.ylim(0, 6)
 
-plt.savefig("figure_5_3.jpg")
-print("Graphique enregistré dans le fichier figure_5_3.jpg")
+# plt.savefig("figure_5_3.jpg")
+# print("Graphique enregistré dans le fichier figure_5_3.jpg")
 
 
 #4.
