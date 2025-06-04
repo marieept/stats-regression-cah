@@ -473,7 +473,6 @@ def find_min(matrice):
     return fusion_indices
 
 
-# Fonction pour récupérer un groupe ou un point isolé à partir d’un indice
 def get_groupe_ou_point(idx, points_isoles):
     '''
     Récupère si c'est un groupe ou un point isolé à partir d'un indice dans la matrice
@@ -620,7 +619,7 @@ print("\n")
 
 #GAMMA 4
 
-# Trouver la paire avec la distance minimale (hors diagonale 0)
+# Trouver la paire avec la distance minimale
 fusion_indices = find_min(matrice_4)
 
 # Fusion selon les indices
@@ -655,7 +654,7 @@ print("\n")
 
 #GAMMA 5
 
-# Trouver la paire avec la distance minimale (hors diagonale 0)
+# Trouver la paire avec la distance minimale 
 fusion_indices = fusion_indices = find_min(matrice_5)
 
 # Fusion selon les indices
@@ -723,39 +722,42 @@ print("Matrice des distances euclidiennes au carré avec Γ6 :\n")
 print(df6.round(1))
 print("\n")
 
-#Visualisation des classes
+#Visualisation progressive des classes
 # Liste de toutes les classes formées au fur et à mesure
 classes_etapes = [classe_G1, classe_G2, classe_G3, classe_G4, classe_G5, classe_G6]
 
 # Couleurs pour les classes
 couleurs = ['blue', 'orange', 'red', 'green', 'purple', 'brown']
 
+#On extrait les coordonnées x et y des points pour les afficher
 x_all = [p[0] for p in points]
 y_all = [p[1] for p in points]
 
+#Boucle sur chaque étape (de Γ1 à Γ6)
 for i in range(len(classes_etapes)):
-    plt.figure(figsize=(8,6))
+    plt.figure(figsize=(8,6)) #on crée une nouvelle figure pour chaque étape
     
     # Tracer tous les points en gris clair
     plt.scatter(x_all, y_all, color='lightgray', label='Points initiaux')
     
-    # Tracer toutes les classes formées jusqu'à l'étape i
+    # Tracer toutes les classes formées jusqu'à l'étape i incluse
     for j in range(i+1):
-        classe = classes_etapes[j]
-        x_c = [p[0] for p in classe]
-        y_c = [p[1] for p in classe]
+        classe = classes_etapes[j] #on récupère la classe Γ(j+1)
+        x_c = [p[0] for p in classe] #coordonnées x de la classe
+        y_c = [p[1] for p in classe] #coordonnées y de la classe
         
+        #affichage des points de la classe et de la ligne en pointillés
         plt.scatter(x_c, y_c, color=couleurs[j], s=100, label=f"Classe Γ{j+1}")
-        if len(classe) > 1:
-            plt.plot(x_c, y_c, linestyle='--', color=couleurs[j])
+        plt.plot(x_c, y_c, linestyle='--', color=couleurs[j])
     
+    #on ajoute les titres et les axes
     plt.title(f"Fusion jusqu'à la classe Γ{i+1}")
     plt.xlabel("x")
     plt.ylabel("y")
     plt.legend()
     plt.grid(True)
-    plt.savefig(f"Classe {i+1}.png")
     plt.show()
+    
 
 
 # 5.6.
