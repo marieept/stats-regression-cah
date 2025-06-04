@@ -137,6 +137,17 @@ print("Écart-type des erreurs :", s)
 
 # 3.4. Interprétation des Résultats
 
+# Affichage d'un tableau pour mieux visualiser nos résultats
+# Création du tableau
+Tab_Affichage = pd.DataFrame({
+    "x": x,
+    "y (observée)": y,
+    "ŷ (prédite)": np.round(y_pred, 4),
+    "Résidu (y - ŷ)": np.round(e, 4)
+})
+
+print(Tab_Affichage)
+
 #     - Interprétation des coefficients
 
 #     b0=3.33 (ordonnée à l'origine) : c'est la valeur estimée de y quand x=0. Cela signifie qu'à l'origine de l'axe x, la droite de régression prévoit y=3.33.
@@ -191,7 +202,7 @@ print("\n")
 # H0 : b1 = 0 (pas de relation linéaire)
 # H1 : b1 != 0 (relation linéaire significative)
 
-# Statistique de test
+# Statistique de test pour b1
 
 t_b1 = (b1-0)/SEb1 # t suit une loi de Student donc on calcul la p-valeur pour savoir si on rejette l'hypothèse ou non
 p_b1 = 2 * (1 - stats.t.cdf(abs(t_b1), df=n - 2))
@@ -208,7 +219,7 @@ print("\n")
 # 4.4 Test d'Hypothèse pour l'Ordonnée à l'Origine (b0)
 # Hypothèses : H0 : b0 = 0 vs H1 : b0 != 0
 
-# Statistique de test
+# Statistique de test pour b0
 
 t_b0 = (b0-0)/SEb0
 p_b0 = 2 * (1 - stats.t.cdf(abs(t_b0), df=n - 2))
@@ -872,11 +883,11 @@ print("\nPARTIE 6\n")
 # 6.1. - Indices d'évaluation
 
 # Le Silhouette Score mesure dans quelle mesure un objet est bien attribué à son groupe, par rapport aux autres groupes.
-# Pour un point ii, on calcule :
-#    a(i)a(i) : la distance moyenne entre ii et tous les autres points du même groupe.
-#    b(i)b(i) : la plus petite distance moyenne entre ii et tous les points des autres groupes (c'est-à-dire le groupe voisin le plus proche).
+# Pour un point i, on calcule :
+#    a(i) : la distance moyenne entre i et tous les autres points du même groupe.
+#    b(i) : la plus petite distance moyenne entre i et tous les points des autres groupes (c'est-à-dire le groupe voisin le plus proche).
 
-# Ensuite, on calcule le score silhouette de ii :
+# Ensuite, on calcule le score silhouette de i :
 #   s(i)=b(i)−a(i)max⁡(a(i),b(i))
 #   s(i)=max(a(i),b(i))b(i)−a(i)​
 # Interprétation :
