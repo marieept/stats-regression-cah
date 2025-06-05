@@ -904,13 +904,22 @@ print("\n")
 
 # 6.3 - Interprétation des résultats
 
+
 # On recrée un DataFrame avec les données propres et les noms des individus
 final_labels = fcluster(huit, t=best_k, criterion='maxclust') # on calcul les labels finaux avec le meilleur k 
 df_clusters = data.copy()
 df_clusters['Nom'] = noms_tab2.values
 df_clusters['Cluster'] = final_labels
 # On exclut la colonne 'Nom' avant de faire la moyenne des variables par groupe
+
+print("\nCalcul de la moyenne des données")
 print(df_clusters.drop(columns=['Nom']).groupby('Cluster').mean())
+
+print("\nCalcul de la médiane des données")
+print(df_clusters.drop(columns=['Nom']).groupby('Cluster').median())
+
+print("\nCalcul de la variance des données")
+print(df_clusters.drop(columns=['Nom']).groupby('Cluster').var())
 
 
 # 6.5 - Visualisation avancée
