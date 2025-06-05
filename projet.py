@@ -831,15 +831,16 @@ print(df.head())
 # On supprime la première ligne vide si elle existe
 df = df.dropna(how='all')
 
-# On sépare les colonnes
-noms_tab = df.iloc[:, 0]  # première colonne : noms des individus
-data = df.iloc[:, 1:].astype(float)  # colonnes numériques uniquement et on convertit en float pour éviter les erreurs
+# On sépare les colonnes des noms et des variables numériques
+noms_tab = df.iloc[:, 0]
+data = df.iloc[:, 1:].astype(float)  #on convertit en float pour éviter les erreurs
 
-# On s'assure que toutes les valeurs sont numériques, en forçant les erreurs à NaN
+# On convertit les colonnes en float (valeurs numériques)
+#si une valeur ne peut pas être convertie, elle sera remplacée par NaN (données manquantes)
 data = data.apply(pd.to_numeric, errors='coerce')
 
-valid_rows = data.dropna() # On supprime les lignes contenant des NaN (données manquantes)
-noms_tab2 = noms_tab[valid_rows.index]  # On filtre les noms des individus pour qu'ils correspondent exactement aux lignes valides
+valid_rows = data.dropna() # On supprime les lignes contenant des NaN 
+noms_tab2 = noms_tab[valid_rows.index]  # On met a jour les noms des individus pour garder ceux dont les lignes sont valides
 data = valid_rows # On remplace 'data' par la version nettoyée sans valeurs manquantes
 
 #  On normalise les données (centrer-réduire) : chaque colonne aura moyenne 0 et écart-type 1
@@ -854,9 +855,11 @@ dendrogram(huit, labels=noms_tab2.tolist(), leaf_rotation=90)  # On affiche les 
 plt.title("Dendrogramme CAH")
 plt.xlabel("Individus")
 plt.ylabel("Distance")
-plt.axhline(y=15, color='r', linestyle='--') # Ligne horizontale suggérant une coupure (choix de nombre de groupes)
+plt.axhline(y=12, color='r', linestyle='--') # Ligne horizontale suggérant une coupure (choix de nombre de groupes)
 plt.tight_layout()
 plt.show()
+
+####### A VOIR ##########
 
 # On cherche automatiquement le meilleur nombre de groupes en testant de 2 à 10 groupes
 print("\nÉvaluation du coefficient de silhouette pour différents groupes :")
