@@ -334,7 +334,7 @@ def dist_inf(p1, p2):
 
 # 5.1.d. : Distance de Ward ???
 
-    '''
+'''
         La distance de Ward ne mesure pas une simple distance géométrique entre deux points, 
     mais l'augmentation de la variance intra-classe qu'engendrerait la fusion de deux groupes.
     Elle favorise des regroupements compacts, homogènes, et tend à éviter que des points trop éloignés 
@@ -344,7 +344,8 @@ def dist_inf(p1, p2):
     Distance de Ward entre un groupe 1 et un groupe 2 :
     
         ((len(gp1)*len(gp2))/(len(gp1)+len(gp2)))*(np.abs(np.mean(gp1)-np.mean(gp2))**2)
-    '''
+'''
+
 
 # 5.2.
 def dist_min(tableau, dist_func):
@@ -407,6 +408,7 @@ plt.title("Regroupement en classes")
 plt.grid(True)
 plt.xlim(-1, 7)
 plt.ylim(0, 6)
+plt.show()
 
 # plt.savefig("figure_5_3.jpg")
 # print("Graphique enregistré dans le fichier figure_5_3.jpg")
@@ -768,7 +770,7 @@ for i in range(len(classes_etapes)):
     plt.legend()
     plt.grid(True)
     plt.show()
-    
+
 
 
 # 5.6.
@@ -777,18 +779,26 @@ for i in range(len(classes_etapes)):
 # La fonction linkage construit la hiérarchie de regroupement en utilisant la distance euclidienne.
 # Ici, on utilise la méthode 'single' (plus proche voisin), ce qui signifie que la distance entre deux groupes est définie comme la distance minimale entre un point de l'un et un point de l'autre.
 # Cette ligne automatise toutes les étapes de fusion des groupes jusqu'à ce qu'il n'en reste plus qu'un.
+
+
 linked = linkage(points, method='single', metric='euclidean') # La variable linked contient toutes les étapes de regroupement.
+
+import pandas as pd
+
+linked_df = pd.DataFrame(linked, columns=["Groupe 1", "Groupe 2", "Distance", "Nb points"])
+print(linked_df)
 
 # Étape 2 : Affichage du dendrogramme
 # La fonction dendrogram() affiche visuellement les fusions successives entre groupes.
 # Chaque branche représente une étape de regroupement ; plus elle est haute, plus la distance entre les groupes fusionnés est grande.
 # Les labels permettent de visualiser quels points (M1 à M7) sont fusionnés à chaque étape.
 # Cela remplace et résume graphiquement toutes les étapes manuelles de la classification (Γ1, Γ2, etc.).
+
 plt.figure(figsize=(10, 6))
-dendrogram(linked, labels=noms)
+dendrogram(linked, labels=noms) #trace l’arbre des regroupements successifs, label=noms permet d’afficher les noms des points
 plt.title('Dendrogramme - CAH (single linkage)')
 plt.xlabel('Points')
-plt.ylabel('Distance euclidienne')
+plt.ylabel('Distance euclidienne') #l'axe verical représente la distance entre groupes au moment de leur fusion
 plt.grid(True)
 plt.show()
 
@@ -799,7 +809,7 @@ dendrogram(linked, labels=noms)
 plt.title('Dendrogramme - CAH (single linkage)')
 plt.xlabel('Points')
 plt.ylabel('Distance euclidienne')
-seuil = 2 # seuile de découpe, on ne peut pas mettre au-dessus de la hauteur finale du dendogramme
+seuil = 2 # seuil de découpe, on ne peut pas mettre au-dessus de la hauteur finale du dendogramme
 # le seuil de découpe permet de former des groupes, il faut couper juste avant la hauteur finale du dendogramme
 plt.axhline(y=seuil, color='red', linestyle='--', label=f'Seuil = {seuil}') # ajoute une ligne horizontale
 plt.legend()
@@ -821,15 +831,16 @@ print(df.head())
 # On supprime la première ligne vide si elle existe
 df = df.dropna(how='all')
 
-# On sépare les colonnes
-noms_tab = df.iloc[:, 0]  # première colonne : noms des individus
-data = df.iloc[:, 1:].astype(float)  # colonnes numériques uniquement et on convertit en float pour éviter les erreurs
+# On sépare les colonnes des noms et des variables numériques
+noms_tab = df.iloc[:, 0]
+data = df.iloc[:, 1:].astype(float)  #on convertit en float pour éviter les erreurs
 
-# On s'assure que toutes les valeurs sont numériques, en forçant les erreurs à NaN
+# On convertit les colonnes en float (valeurs numériques)
+#si une valeur ne peut pas être convertie, elle sera remplacée par NaN (données manquantes)
 data = data.apply(pd.to_numeric, errors='coerce')
 
-valid_rows = data.dropna() # On supprime les lignes contenant des NaN (données manquantes)
-noms_tab2 = noms_tab[valid_rows.index]  # On filtre les noms des individus pour qu'ils correspondent exactement aux lignes valides
+valid_rows = data.dropna() # On supprime les lignes contenant des NaN 
+noms_tab2 = noms_tab[valid_rows.index]  # On met a jour les noms des individus pour garder ceux dont les lignes sont valides
 data = valid_rows # On remplace 'data' par la version nettoyée sans valeurs manquantes
 
 #  On normalise les données (centrer-réduire) : chaque colonne aura moyenne 0 et écart-type 1
@@ -844,9 +855,11 @@ dendrogram(huit, labels=noms_tab2.tolist(), leaf_rotation=90)  # On affiche les 
 plt.title("Dendrogramme CAH")
 plt.xlabel("Individus")
 plt.ylabel("Distance")
-plt.axhline(y=15, color='r', linestyle='--') # Ligne horizontale suggérant une coupure (choix de nombre de groupes)
+plt.axhline(y=12, color='r', linestyle='--') # Ligne horizontale suggérant une coupure (choix de nombre de groupes)
 plt.tight_layout()
 plt.show()
+
+####### A VOIR ##########
 
 # On cherche automatiquement le meilleur nombre de groupes en testant de 2 à 10 groupes
 print("\nÉvaluation du coefficient de silhouette pour différents groupes :")
