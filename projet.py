@@ -783,8 +783,6 @@ for i in range(len(classes_etapes)):
 
 linked = linkage(points, method='single', metric='euclidean') # La variable linked contient toutes les étapes de regroupement.
 
-import pandas as pd
-
 linked_df = pd.DataFrame(linked, columns=["Groupe 1", "Groupe 2", "Distance", "Nb points"])
 print(linked_df)
 
