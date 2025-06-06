@@ -41,7 +41,7 @@ afficher_stats(y, "y")
 
 plt.scatter(x, y, color='blue')
 for i in range(len(points)):
-    plt.text(x[i] + 0.1, y[i] + 0.1, noms[i])
+    plt.text(x[i] + 0.1, y[i] + 0.1, noms[i]) #décaler le texte du point
 plt.title("Nuage de points")
 plt.xlabel("x")
 plt.ylabel("y")
@@ -208,7 +208,7 @@ print("\n")
 # Statistique de test pour b1
 
 t_b1 = (b1-0)/SEb1 # t suit une loi de Student donc on calcul la p-valeur pour savoir si on rejette l'hypothèse ou non
-p_b1 = 2 * (1 - stats.t.cdf(abs(t_b1), df=n - 2))
+p_b1 = 2 * (1 - stats.t.cdf(abs(t_b1), df=n - 2)) #fonction de répartition cumulative
 print("b1 :")
 print("valeur de test", t_b1)
 print("p-valeur:", p_b1)
@@ -240,7 +240,7 @@ print("\n")
 
 alpha = 0.05
 
-t_crit = stats.t.ppf(1-alpha/2, df= n-2)
+t_crit = stats.t.ppf(1-alpha/2, df= n-2) #CDF inverse ->  sert à trouver la valeur critique pour un test bilatéral basé sur la loi de Student.
 
 IC_b1=[float(b1-t_crit*SEb1),float(b1+t_crit*SEb1)]
 IC_b0=[float(b0-t_crit*SEb0),float(b0+t_crit*SEb0)]
@@ -399,10 +399,10 @@ plt.xlabel("x")
 plt.ylabel("y")
 
 # Récupération des coordonnées des 2 points de la paire la plus proche et calcul de la distance qui les sépare
-pair_min, d_min = dist_min(points, dist)
+pair_min, d_min = dist_min(points, dist) #[(xi,yi),(xj,yj)]
 print("La paire de points les plus proche est : ", pair_min)
-x_vals = [pair_min[0][0], pair_min[0][1]]
-y_vals = [pair_min[1][0], pair_min[1][1]]
+x_vals = [pair_min[0][0], pair_min[0][1]] #[xi,xj]
+y_vals = [pair_min[1][0], pair_min[1][1]] #[yi,yj]
 
 # Relier/Encadrer les 2 points les plus proches (Classe Γ₁)
 plt.plot(x_vals, y_vals, 'go--', label="Classe Γ₁")
@@ -456,8 +456,8 @@ def construire_matrice(groupes, points_restants):
     for i, groupe in enumerate(groupes): #ajoute un index automatique et parcourt les points du groupe
         for j, point in enumerate(points_restants):
             d = dist_groupe_point(groupe, point) #groupe prend un point du groupe et point parmi ceux restants
-            matrice[i, n_groupes + j] = d
-            matrice[n_groupes + j, i] = d
+            matrice[i, n_groupes + j] = d #i correspond à l'indice de la ligne du groupe
+            matrice[n_groupes + j, i] = d #i correspond à l'indice de la colonne du groupe
 
     # Distances entre points restants
     for i in range(n_restants):
@@ -511,7 +511,7 @@ points_restants=[p for p in points if p not in classe_G1]
 matrice_2 = construire_matrice([classe_G1], points_restants)
 
 # Création des noms pour les lignes/colonnes
-noms_groupes = ["Γ1"] + [f"{noms[points.index(p)]}" for p in points_restants]
+noms_groupes = ["Γ1"] + [f"{noms[points.index(p)]}" for p in points_restants] #trouve l’indice du point p dans la liste points pour trouver le nom du point
 
 #Affichage avec pandas
 df2 = pd.DataFrame(matrice_2, index=noms_groupes, columns=noms_groupes)
@@ -804,14 +804,14 @@ plt.grid(True)
 plt.show()
 
 # 5.7.
-# On repart du dendogramme que l'on a construit dans la question 6 
+# On repart du dendrogramme que l'on a construit dans la question 6 
 plt.figure(figsize=(10, 6))
 dendrogram(linked, labels=noms)
 plt.title('Dendrogramme - CAH (single linkage)')
 plt.xlabel('Points')
 plt.ylabel('Distance euclidienne')
-seuil = 2 # seuil de découpe, on ne peut pas mettre au-dessus de la hauteur finale du dendogramme
-# le seuil de découpe permet de former des groupes, il faut couper juste avant la hauteur finale du dendogramme
+seuil = 2 # seuil de découpe, on ne peut pas mettre au-dessus de la hauteur finale du dendrogramme
+# le seuil de découpe permet de former des groupes, il faut couper juste avant la hauteur finale du dendrogramme
 plt.axhline(y=seuil, color='red', linestyle='--', label=f'Seuil = {seuil}') # ajoute une ligne horizontale
 plt.legend()
 plt.grid(True)
@@ -830,7 +830,7 @@ df = pd.read_excel("Data_PE_2025-CSI3_CIR3.xlsx")
 print(df.head())
 
 # On supprime la première ligne vide si elle existe
-df = df.dropna(how='all')
+df = df.dropna(how='all') #supprime uniquement les lignes où TOUTES les valeurs sont manquantes
 
 # On sépare les colonnes des noms et des variables numériques
 noms_tab = df.iloc[:, 0]
@@ -844,7 +844,7 @@ valid_rows = data.dropna() # On supprime les lignes contenant des NaN
 noms_tab2 = noms_tab[valid_rows.index]  # On met a jour les noms des individus pour garder ceux dont les lignes sont valides
 data = valid_rows # On remplace 'data' par la version nettoyée sans valeurs manquantes
 
-#  On normalise les données (centrer-réduire) : chaque colonne aura moyenne 0 et écart-type 1
+#  On standardiser les données (centrer-réduire) : chaque colonne aura moyenne 0 et écart-type 1
 scaler = StandardScaler()
 data_scaled = scaler.fit_transform(data)
 
