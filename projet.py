@@ -977,11 +977,15 @@ plt.show()
 # Calcul de la matrice des distances euclidiennes
 distance_matrix = squareform(pdist(data_scaled, metric='euclidean')) #pdist(...) : calcule les distances entre chaque paire d’individus dans data_scaled
 # squareform(...) : convertit le vecteur des distances en matrice symétrique (n × n), où chaque case [i][j] correspond à la distance entre l’individu i et l’individu j.
+
+indices_tries= np.argsort(final_labels) # on récupère les indices triés par cluster question 6.3
+matrice_triee = distance_matrix[indices_tries, :][:, indices_tries] # on trie la matrice des distances selon ces indices
+
 # Affichage de la heatmap
 plt.figure(figsize=(10, 8))
 # carte de chaleur
 # distance_matrix : matrice des distances à visualiser.
-sns.heatmap(distance_matrix, cmap='viridis') # cmap='viridis' : palette de couleurs (du violet au jaune) → plus la distance est petite, plus la couleur est foncée.
+sns.heatmap(matrice_triee, cmap='viridis') # cmap='viridis' : palette de couleurs (du violet au jaune) → plus la distance est petite, plus la couleur est foncée.
 plt.title("Heatmap des distances euclidiennes entre individus")
 plt.xlabel("Individus")
 plt.ylabel("Individus")
