@@ -51,14 +51,14 @@ plt.savefig("figure_1_2.jpg")
 
 #   Interprétation statistique :
 
-#Les valeurs xx sont plus dispersées que les valeurs yy.
-#La moyenne de xx est plus faible que celle de yy, indiquant une asymétrie spatiale.
-#L’étendue plus grande pour xx traduit une plus grande variabilité sur l’axe horizontal.
+# Les valeurs x sont plus dispersées que les valeurs y.
+# La moyenne de x est plus faible que celle de y, indiquant une asymétrie spatiale.
+# L’étendue plus grande pour x traduit une plus grande variabilité sur l’axe horizontal.
 
 #   Interprétation graphique :
 
-#Le nuage montre une certaine tendance croissante mais non strictement linéaire.
-#Il est possible qu’une relation linéaire approximative existe entre xx et yy, à tester dans la partie suivante.
+# Le nuage montre une certaine tendance croissante mais non strictement linéaire.
+# Il est possible qu’une relation linéaire approximative existe entre x et y, à tester dans la partie suivante.
 
 
 #########################################
