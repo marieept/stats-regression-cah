@@ -2,12 +2,12 @@
 
 Ce projet explore les méthodes fondamentales d'analyse de données à travers les statistiques descriptives, la régression linéaire et la classification ascendante hiérarchique (CAH). Il combine implémentation manuelle et automatisée pour analyser des données bidimensionnelles puis des données réelles multidimensionnelles.
 
-## 👥 Membres
+## Membres
 Marie EPINAT - Louis ROBILLARD - Laure WARLOP
 
 **Contexte :** Projet électif 3e année ISEN Ouest | Module : Analyse de données & Cycle | Juin 2025
 
-## 📂 Organisation du projet
+## Organisation du projet
 ```
 stats-regression-cah/
 ├── projet.py                           # Programme principal (6 parties)
@@ -15,7 +15,7 @@ stats-regression-cah/
 └── README.md
 ```
 
-## 🎯 Fonctionnalités
+## Fonctionnalités
 
 ### Statistiques & Régression (Parties I-IV)
 * **Statistiques descriptives** : moyenne, médiane, variance, écart-type sur 7 points 2D
@@ -35,7 +35,7 @@ stats-regression-cah/
 * **Visualisations avancées** : ACP (76.6% variance), t-SNE, heatmap distances
 * **Analyse statistique** : profils par cluster (moyennes, médianes, variances)
 
-## 🛠️ Prérequis
+## Prérequis
 ```bash
 # Installation des dépendances
 pip install numpy pandas matplotlib scipy scikit-learn seaborn openpyxl
@@ -47,7 +47,7 @@ pip install numpy pandas matplotlib scipy scikit-learn seaborn openpyxl
 # - scikit-learn : k-means, PCA, t-SNE, métriques
 ```
 
-## 🚀 Utilisation
+## Utilisation
 ```bash
 # 1. Placer Data_PE_2025-CSI3_CIR3.xlsx dans le répertoire
 # 2. Exécuter le script
@@ -60,9 +60,10 @@ python projet.py
 # - Statistiques par cluster
 ```
 
-## 📊 Chaîne de traitement
+## Chaîne de traitement
 
 **Phase 1 (7 points 2D)** : Statistiques → Régression → Tests → CAH manuelle  
 **Phase 2 (29 individus)** : Normalisation → CAH Ward → Évaluation → Visualisations
 
 ---
+
