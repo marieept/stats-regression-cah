@@ -21,7 +21,6 @@ stats-regression-cah/
 * **Statistiques descriptives** : moyenne, médiane, variance, écart-type sur 7 points 2D
 * **Régression linéaire** : calcul coefficients b₀, b₁ et R²
 * **Tests statistiques** : hypothèses (Student), p-valeurs, intervalles de confiance 95%
-* **Résultat** : R²=0.0486 → absence de relation linéaire significative
 
 ### Classification Hiérarchique (Partie V)
 * **Implémentation manuelle** : matrices de distances, formation progressive des clusters Γ₁ à Γ₆
@@ -30,9 +29,9 @@ stats-regression-cah/
 * **Dendrogramme** : visualisation hiérarchique avec seuil de coupure optimal
 
 ### Évaluation & Validation (Partie VI)
-* **Coefficient de silhouette** : mesure cohésion/séparation des clusters (0.4907 pour k=2)
-* **Comparaison** : CAH vs k-means (CAH supérieur : 0.4907 > 0.4150)
-* **Visualisations avancées** : ACP (76.6% variance), t-SNE, heatmap distances
+* **Coefficient de silhouette** : mesure cohésion/séparation des clusters 
+* **Comparaison** : CAH vs k-means
+* **Visualisations avancées** : ACP , t-SNE, heatmap distances
 * **Analyse statistique** : profils par cluster (moyennes, médianes, variances)
 
 ## Prérequis
@@ -66,4 +65,5 @@ python projet.py
 **Phase 2 (29 individus)** : Normalisation → CAH Ward → Évaluation → Visualisations
 
 ---
+
 
